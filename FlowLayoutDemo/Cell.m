@@ -12,10 +12,10 @@
 {
     [super setHighlighted:highlighted];
     if (highlighted) {
-        self.alpha = 0.5;
+        self.backgroundColor = [UIColor colorWithWhite:0.5 alpha:1.0];
     }
     else {
-        self.alpha = 1.f;
+        self.backgroundColor = [UIColor whiteColor];
     }
 }
 

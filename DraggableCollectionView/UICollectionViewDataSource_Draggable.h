@@ -17,5 +17,8 @@
 @optional
 
 - (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath toIndexPath:(NSIndexPath *)toIndexPath;
+-(void)collectionView:(UICollectionView *)collectionView willBeginMovingItemAtIndexPath:(NSIndexPath *)indexPath withView:(UIView *)view;
+-(void)collectionView:(UICollectionView *)collectionView willEndMovingItemAtIndexPath:(NSIndexPath *)indexPath withView:(UIView *)view;
+
 
 @end

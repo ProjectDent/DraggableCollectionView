@@ -32,7 +32,7 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
     NSIndexPath *fromIndexPath;
     NSIndexPath *toIndexPath;
     NSIndexPath *lastIndexPath;
-    UIImageView *mockCell;
+    UIView *mockCell;
     CGPoint mockCenter;
     CGPoint fingerTranslation;
     CADisplayLink *timer;
@@ -171,13 +171,20 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
                 return;
             }
             // Create mock cell to drag around
-            UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
-            cell.highlighted = NO;
             [mockCell removeFromSuperview];
-            mockCell = [[UIImageView alloc] initWithFrame:cell.frame];
-            mockCell.image = [self imageFromCell:cell];
+            mockCell = nil;
+            
+            mockCell = [self.collectionView.dataSource collectionView:self.collectionView cellForItemAtIndexPath:indexPath];
+            mockCell.hidden = NO;
+            mockCell.layer.hidden = NO;
             mockCenter = mockCell.center;
             [self.collectionView addSubview:mockCell];
+            if ([self.collectionView.dataSource respondsToSelector:@selector(collectionView:willBeginMovingItemAtIndexPath:withView:)]) {
+                [(id<UICollectionViewDataSource_Draggable>)self.collectionView.dataSource collectionView:self.collectionView
+                                                                          willBeginMovingItemAtIndexPath:fromIndexPath
+                                                                                                withView:mockCell];
+            }
+            
             [UIView
              animateWithDuration:0.3
              animations:^{
@@ -213,6 +220,13 @@ typedef NS_ENUM(NSInteger, _ScrollingDirection) {
             
             // Switch mock for cell
             UICollectionViewLayoutAttributes *layoutAttributes = [self.collectionView layoutAttributesForItemAtIndexPath:toIndexPath];
+            
+            if ([self.collectionView.dataSource respondsToSelector:@selector(collectionView:willEndMovingItemAtIndexPath:withView:)]) {
+                [(id<UICollectionViewDataSource_Draggable>)self.collectionView.dataSource collectionView:self.collectionView
+                                                                            willEndMovingItemAtIndexPath:fromIndexPath
+                                                                                                withView:mockCell];
+            }
+            
             [UIView
              animateWithDuration:0.3
              animations:^{
